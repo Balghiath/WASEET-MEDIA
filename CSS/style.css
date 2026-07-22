@@ -3348,3 +3348,26 @@ section {
     width: 22px;
   }
 }
+
+/* Splash Click/Touch Hint for HTTPS Autoplay */
+.splash-click-hint {
+  margin-top: 15px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--brand-orange);
+  background: rgba(251, 140, 0, 0.12);
+  border: 1px solid rgba(251, 140, 0, 0.4);
+  padding: 8px 18px;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(251, 140, 0, 0.25);
+  animation: pulseHint 1.8s infinite alternate;
+}
+
+@keyframes pulseHint {
+  0% { transform: scale(1); opacity: 0.85; }
+  100% { transform: scale(1.04); opacity: 1; box-shadow: 0 0 25px rgba(251, 140, 0, 0.5); }
+}

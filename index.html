@@ -44,7 +44,11 @@
   <body>
     <!-- Creative Ultra-Cinematic Studio Preloader Splash Screen -->
     <div class="preloader-overlay" id="preloader">
-      <audio id="splashAudio" src="audio/waseet-media.mp3" preload="auto" playsinline webkit-playsinline></audio>
+      <audio id="splashAudio" preload="auto" playsinline webkit-playsinline>
+        <source src="audio/waseet-media.mp3" type="audio/mpeg" />
+        <source src="audio/WASEET-MEDIA.mp3" type="audio/mpeg" />
+        <source src="./audio/waseet-media.mp3" type="audio/mpeg" />
+      </audio>
       <!-- Ambient Particles -->
       <div class="splash-particles">
         <div class="particle p1"></div>
@@ -99,6 +103,7 @@
           <div class="loader-progress"></div>
         </div>
         <span class="countdown-text">WASEET MEDIA • 2026</span>
+        <div class="splash-click-hint"><i class="fa-solid fa-volume-high"></i> <span>اضغط في أي مكان للشاشة لسماع الصوت والدخول 🎬</span></div>
       </div>
     </div>
     <!-- Dynamic Film Strip Decorative Header Line -->

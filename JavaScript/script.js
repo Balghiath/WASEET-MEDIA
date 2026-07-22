@@ -14,13 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (preloader) {
     let preloaderHidden = false;
     let fallbackTimer = null;
-    let audioStarted = false;
 
     const hidePreloader = () => {
       if (preloaderHidden) return;
       preloaderHidden = true;
       if (fallbackTimer) clearTimeout(fallbackTimer);
-      removeTriggers();
 
       preloader.classList.add("preloader-hidden");
       if (splashAudio) {
@@ -39,71 +37,40 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 900);
     };
 
-    const startAudio = () => {
-      if (!splashAudio || preloaderHidden || audioStarted) return;
-      audioStarted = true;
+    const playAudio = () => {
+      if (!splashAudio) return;
+      splashAudio.muted = false;
       splashAudio.volume = 1.0;
-      const p = splashAudio.play();
-      if (p !== undefined) {
-        p.then(() => {
-          removeTriggers();
-        }).catch(() => {
-          audioStarted = false;
-        });
-      }
-    };
-
-    // Fallback: If waseet-media.mp3 gives 404 error on GitHub Pages, automatically switch to WASEET-MEDIA.mp3!
-    if (splashAudio) {
-      splashAudio.addEventListener("error", () => {
-        if (splashAudio.src && splashAudio.src.includes("waseet-media.mp3")) {
-          splashAudio.src = "audio/WASEET-MEDIA.mp3";
-          splashAudio.load();
-          startAudio();
-        }
-      });
-    }
-
-    const triggerEvents = [
-      "click", "touchstart", "touchend", "pointerdown",
-      "mousemove", "mouseenter", "pointermove", "keydown", "wheel"
-    ];
-
-    const onGestureTrigger = () => {
-      startAudio();
-    };
-
-    const addTriggers = () => {
-      triggerEvents.forEach((evt) => {
-        window.addEventListener(evt, onGestureTrigger, { passive: true });
-        preloader.addEventListener(evt, onGestureTrigger, { passive: true });
-      });
-    };
-
-    const removeTriggers = () => {
-      triggerEvents.forEach((evt) => {
-        window.removeEventListener(evt, onGestureTrigger);
-        preloader.removeEventListener(evt, onGestureTrigger);
-      });
+      splashAudio.play().catch(() => {});
     };
 
     if (splashAudio) {
-      splashAudio.volume = 1.0;
-      const playPromise = splashAudio.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          audioStarted = true;
-        }).catch(() => {
-          addTriggers();
-        });
-      } else {
-        addTriggers();
-      }
+      // 1. Try immediate playback
+      playAudio();
 
-      splashAudio.addEventListener("ended", hidePreloader);
+      // 2. Play on any click, touch, or keypress anywhere on screen
+      const handleUserInteraction = () => {
+        playAudio();
+      };
+
+      ["click", "touchstart", "touchend", "pointerdown", "keydown"].forEach((evt) => {
+        window.addEventListener(evt, handleUserInteraction, { passive: true });
+        preloader.addEventListener(evt, handleUserInteraction, { passive: true });
+      });
+
+      // 3. When audio finishes, transition splash
+      splashAudio.addEventListener("ended", () => {
+        hidePreloader();
+      });
     }
 
-    fallbackTimer = setTimeout(hidePreloader, 6500);
+    // Allow clicking preloader to start audio & hide preloader after audio or delay
+    preloader.addEventListener("click", () => {
+      playAudio();
+    });
+
+    // Fallback timer (8 seconds) if user doesn't interact or listen
+    fallbackTimer = setTimeout(hidePreloader, 8000);
   }
 
   /* -------------------------------------------------------------------------- */
