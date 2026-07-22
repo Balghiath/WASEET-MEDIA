@@ -6,11 +6,10 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   /* -------------------------------------------------------------------------- */
-  /* 0. Preloader Splash Screen & Instant Multi-Gesture Audio Control          */
+  /* 0. Preloader Splash Screen & GitHub Pages Compatible Audio Control         */
   /* -------------------------------------------------------------------------- */
   const preloader = document.getElementById("preloader");
   const splashAudio = document.getElementById("splashAudio");
-
 
   if (preloader) {
     let preloaderHidden = false;
@@ -44,17 +43,30 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!splashAudio || preloaderHidden || audioStarted) return;
       audioStarted = true;
       splashAudio.volume = 1.0;
-      splashAudio.play().then(() => {
-        removeTriggers();
-      }).catch(() => {
-        audioStarted = false;
-      });
+      const p = splashAudio.play();
+      if (p !== undefined) {
+        p.then(() => {
+          removeTriggers();
+        }).catch(() => {
+          audioStarted = false;
+        });
+      }
     };
 
+    // Fallback: If waseet-media.mp3 gives 404 error on GitHub Pages, automatically switch to WASEET-MEDIA.mp3!
+    if (splashAudio) {
+      splashAudio.addEventListener("error", () => {
+        if (splashAudio.src && splashAudio.src.includes("waseet-media.mp3")) {
+          splashAudio.src = "audio/WASEET-MEDIA.mp3";
+          splashAudio.load();
+          startAudio();
+        }
+      });
+    }
+
     const triggerEvents = [
-      "mousemove", "mouseenter", "mouseover", "pointermove",
-      "touchstart", "touchmove", "touchend",
-      "click", "dblclick", "keydown", "wheel", "scroll"
+      "click", "touchstart", "touchend", "pointerdown",
+      "mousemove", "mouseenter", "pointermove", "keydown", "wheel"
     ];
 
     const onGestureTrigger = () => {
@@ -63,8 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const addTriggers = () => {
       triggerEvents.forEach((evt) => {
-        window.addEventListener(evt, onGestureTrigger, { passive: true, once: true });
-        preloader.addEventListener(evt, onGestureTrigger, { passive: true, once: true });
+        window.addEventListener(evt, onGestureTrigger, { passive: true });
+        preloader.addEventListener(evt, onGestureTrigger, { passive: true });
       });
     };
 
@@ -76,27 +88,21 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     if (splashAudio) {
-      // 1. Immediate Autoplay Attempt on page load
       splashAudio.volume = 1.0;
       const playPromise = splashAudio.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
           audioStarted = true;
         }).catch(() => {
-          // If browser restricts unprompted autoplay, activate on any mouse hover/movement, touch, or scroll!
           addTriggers();
         });
       } else {
         addTriggers();
       }
 
-      // Hide preloader seamlessly when audio finishes playing
       splashAudio.addEventListener("ended", hidePreloader);
     }
 
-
-
-    // Extended fallback timer (~6.5 seconds) to give ample time for audio or hover interaction
     fallbackTimer = setTimeout(hidePreloader, 6500);
   }
 
