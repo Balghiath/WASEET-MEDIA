@@ -6,7 +6,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   /* -------------------------------------------------------------------------- */
-  /* 0. Preloader Splash Screen & GitHub Pages Compatible Audio Control         */
+  /* 0. Preloader Splash Screen & Strictly Scoped Audio Control               */
   /* -------------------------------------------------------------------------- */
   const preloader = document.getElementById("preloader");
   const splashAudio = document.getElementById("splashAudio");
@@ -14,63 +14,63 @@ document.addEventListener("DOMContentLoaded", () => {
   if (preloader) {
     let preloaderHidden = false;
     let fallbackTimer = null;
+    const audioEvents = ["click", "touchstart", "pointerdown", "keydown"];
+
+    const removeAudioListeners = () => {
+      audioEvents.forEach((evt) => {
+        window.removeEventListener(evt, handleSplashGesture);
+        if (preloader) preloader.removeEventListener(evt, handleSplashGesture);
+      });
+    };
 
     const hidePreloader = () => {
       if (preloaderHidden) return;
       preloaderHidden = true;
       if (fallbackTimer) clearTimeout(fallbackTimer);
+      removeAudioListeners();
 
       preloader.classList.add("preloader-hidden");
       if (splashAudio) {
-        let fadeInterval = setInterval(() => {
-          if (splashAudio.volume > 0.1) {
-            splashAudio.volume -= 0.1;
-          } else {
-            splashAudio.pause();
-            splashAudio.currentTime = 0;
-            clearInterval(fadeInterval);
-          }
-        }, 80);
+        splashAudio.pause();
+        splashAudio.currentTime = 0;
       }
       setTimeout(() => {
         preloader.style.display = "none";
       }, 900);
     };
 
-    const playAudio = () => {
-      if (!splashAudio) return;
+    const playSplashAudio = () => {
+      if (!splashAudio || preloaderHidden) return;
       splashAudio.muted = false;
       splashAudio.volume = 1.0;
-      splashAudio.play().catch(() => {});
+      const playPromise = splashAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    };
+
+    const handleSplashGesture = () => {
+      if (!preloaderHidden) {
+        playSplashAudio();
+      }
     };
 
     if (splashAudio) {
       // 1. Try immediate playback
-      playAudio();
+      playSplashAudio();
 
-      // 2. Play on any click, touch, or keypress anywhere on screen
-      const handleUserInteraction = () => {
-        playAudio();
-      };
-
-      ["click", "touchstart", "touchend", "pointerdown", "keydown"].forEach((evt) => {
-        window.addEventListener(evt, handleUserInteraction, { passive: true });
-        preloader.addEventListener(evt, handleUserInteraction, { passive: true });
+      // Attach gesture listeners ONLY while splash screen is active
+      audioEvents.forEach((evt) => {
+        window.addEventListener(evt, handleSplashGesture, { passive: true });
+        preloader.addEventListener(evt, handleSplashGesture, { passive: true });
       });
 
-      // 3. When audio finishes, transition splash
-      splashAudio.addEventListener("ended", () => {
-        hidePreloader();
-      });
+      // 2. Hide preloader smoothly when audio finishes
+      splashAudio.addEventListener("ended", hidePreloader);
     }
 
-    // Allow clicking preloader to start audio & hide preloader after audio or delay
-    preloader.addEventListener("click", () => {
-      playAudio();
-    });
-
-    // Fallback timer (8 seconds) if user doesn't interact or listen
-    fallbackTimer = setTimeout(hidePreloader, 8000);
+    // Preloader auto-transition timer
+    fallbackTimer = setTimeout(hidePreloader, 5000);
   }
 
   /* -------------------------------------------------------------------------- */
