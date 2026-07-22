@@ -1,3 +1,18 @@
+
+/* Custom Drone Quadcopter Icon (FontAwesome compatible) */
+.fa-drone,
+i.fa-drone,
+.fa-plane-fly,
+i.fa-plane-fly {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.18em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='black'/%3E%3Ccircle cx='4.5' cy='4.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='1.5' y1='4.5' x2='7.5' y2='4.5' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='19.5' cy='4.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='16.5' y1='4.5' x2='22.5' y2='4.5' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='4.5' cy='19.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='1.5' y1='19.5' x2='7.5' y2='19.5' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='19.5' cy='19.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='16.5' y1='19.5' x2='22.5' y2='19.5' stroke='black' stroke-width='1.5'/%3E%3Cpath d='M6.5 6.5l3 3M17.5 6.5l-3 3M6.5 17.5l3-3M17.5 17.5l-3-3' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='black'/%3E%3Ccircle cx='4.5' cy='4.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='1.5' y1='4.5' x2='7.5' y2='4.5' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='19.5' cy='4.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='16.5' y1='4.5' x2='22.5' y2='4.5' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='4.5' cy='19.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='1.5' y1='19.5' x2='7.5' y2='19.5' stroke='black' stroke-width='1.5'/%3E%3Ccircle cx='19.5' cy='19.5' r='2.5' fill='none' stroke='black' stroke-width='1.5'/%3E%3Cline x1='16.5' y1='19.5' x2='22.5' y2='19.5' stroke='black' stroke-width='1.5'/%3E%3Cpath d='M6.5 6.5l3 3M17.5 6.5l-3 3M6.5 17.5l3-3M17.5 17.5l-3-3' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
 /* ==========================================================================
    Waseet Media (وسيط ميديا) - Design System & Custom CSS Stylesheet
    Spectrum Identity: Red (#E53935), Orange (#FB8C00), Green (#4CAF50), Cyan (#00BCD4), Purple (#3F51B5)
@@ -2545,6 +2560,14 @@ section {
 
   .hero-stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    gap: 20px 15px;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+  .stat-card {
+    justify-content: center;
+    width: 100%;
   }
 
   .packages-grid {
@@ -2718,6 +2741,18 @@ section {
     font-size: 2.2rem;
   }
 
+  .hero-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    gap: 15px 12px;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .stat-card {
+    justify-content: center;
+    width: 100%;
+  }
+
   .services-grid {
     grid-template-columns: 1fr;
   }
@@ -2809,6 +2844,18 @@ section {
 
   .hero-stats-grid {
     grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 10px;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .stat-card {
+    justify-content: center;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
   }
 
   .section-title {
@@ -2966,14 +3013,22 @@ section {
 
   .hero-stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    justify-items: center;
+    gap: 14px 10px;
+    max-width: 360px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .stat-card {
+    justify-content: center;
+    width: 100%;
   }
 
-  .hero-stat-number {
+  .stat-number {
     font-size: 1.4rem;
   }
 
-  .hero-stat-label {
+  .stat-label {
     font-size: 0.7rem;
   }
 
@@ -3173,15 +3228,26 @@ section {
   }
 
   .hero-stats-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 10px;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  .stat-card {
+    justify-content: center;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
   }
 
-  .hero-stat-item {
+  .stat-card {
     padding: 10px 6px;
   }
 
-  .hero-stat-number {
+  .stat-number {
     font-size: 1.2rem;
   }
 
@@ -3239,9 +3305,21 @@ section {
 @media (max-width: 300px) {
   .hero-stats-grid {
     grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 10px;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .stat-card {
+    justify-content: center;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
   }
 
-  .hero-stat-item {
+  .stat-card {
     display: flex;
     align-items: center;
     gap: 8px;

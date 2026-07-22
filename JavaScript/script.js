@@ -6,18 +6,98 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   /* -------------------------------------------------------------------------- */
-  /* 0. Preloader Splash Screen Control                                         */
+  /* 0. Preloader Splash Screen & Instant Multi-Gesture Audio Control          */
   /* -------------------------------------------------------------------------- */
   const preloader = document.getElementById("preloader");
+  const splashAudio = document.getElementById("splashAudio");
+
+
   if (preloader) {
+    let preloaderHidden = false;
+    let fallbackTimer = null;
+    let audioStarted = false;
+
     const hidePreloader = () => {
+      if (preloaderHidden) return;
+      preloaderHidden = true;
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      removeTriggers();
+
       preloader.classList.add("preloader-hidden");
+      if (splashAudio) {
+        let fadeInterval = setInterval(() => {
+          if (splashAudio.volume > 0.1) {
+            splashAudio.volume -= 0.1;
+          } else {
+            splashAudio.pause();
+            splashAudio.currentTime = 0;
+            clearInterval(fadeInterval);
+          }
+        }, 80);
+      }
       setTimeout(() => {
         preloader.style.display = "none";
       }, 900);
     };
-    // Auto transition splash screen after ~3.1 seconds
-    setTimeout(hidePreloader, 3100);
+
+    const startAudio = () => {
+      if (!splashAudio || preloaderHidden || audioStarted) return;
+      audioStarted = true;
+      splashAudio.volume = 1.0;
+      splashAudio.play().then(() => {
+        removeTriggers();
+      }).catch(() => {
+        audioStarted = false;
+      });
+    };
+
+    const triggerEvents = [
+      "mousemove", "mouseenter", "mouseover", "pointermove",
+      "touchstart", "touchmove", "touchend",
+      "click", "dblclick", "keydown", "wheel", "scroll"
+    ];
+
+    const onGestureTrigger = () => {
+      startAudio();
+    };
+
+    const addTriggers = () => {
+      triggerEvents.forEach((evt) => {
+        window.addEventListener(evt, onGestureTrigger, { passive: true, once: true });
+        preloader.addEventListener(evt, onGestureTrigger, { passive: true, once: true });
+      });
+    };
+
+    const removeTriggers = () => {
+      triggerEvents.forEach((evt) => {
+        window.removeEventListener(evt, onGestureTrigger);
+        preloader.removeEventListener(evt, onGestureTrigger);
+      });
+    };
+
+    if (splashAudio) {
+      // 1. Immediate Autoplay Attempt on page load
+      splashAudio.volume = 1.0;
+      const playPromise = splashAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          audioStarted = true;
+        }).catch(() => {
+          // If browser restricts unprompted autoplay, activate on any mouse hover/movement, touch, or scroll!
+          addTriggers();
+        });
+      } else {
+        addTriggers();
+      }
+
+      // Hide preloader seamlessly when audio finishes playing
+      splashAudio.addEventListener("ended", hidePreloader);
+    }
+
+
+
+    // Extended fallback timer (~6.5 seconds) to give ample time for audio or hover interaction
+    fallbackTimer = setTimeout(hidePreloader, 6500);
   }
 
   /* -------------------------------------------------------------------------- */
