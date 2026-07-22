@@ -1127,18 +1127,21 @@ body {
   flex-direction: column;
   justify-content: space-between;
   width: 28px;
-  height: 20px;
+  height: 22px;
   background: transparent;
   border: none;
   cursor: pointer;
+  padding: 0;
+  z-index: 1001;
 }
 
 .hamburger-btn span {
   height: 3px;
   width: 100%;
   background: var(--text-primary);
-  border-radius: 3px;
+  border-radius: 4px;
   transition: var(--transition);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
 }
 
 /* 4. Hero Section */
@@ -2578,9 +2581,13 @@ section {
     grid-template-columns: 1fr;
   }
 
-  /* Navbar tablet: show hamburger, hide nav links */
+  /* Navbar mobile/tablet: show hamburger ☰, hide branch dropdown from header */
   .hamburger-btn {
-    display: flex;
+    display: flex !important;
+  }
+
+  .quick-branches-dropdown {
+    display: none !important;
   }
 
   .nav-menu {
@@ -3346,5 +3353,21 @@ section {
 
   .hamburger-btn {
     width: 22px;
+  }
+}
+
+/* Ensure Mobile Header shows Hamburger ☰ and hides branch dropdown on all mobile screens */
+@media (max-width: 1024px) {
+  .quick-branches-dropdown {
+    display: none !important;
+  }
+
+  .hamburger-btn {
+    display: flex !important;
+  }
+
+  .nav-actions {
+    gap: 10px;
+    align-items: center;
   }
 }
